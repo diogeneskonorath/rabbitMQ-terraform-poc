@@ -11,7 +11,7 @@ resource "docker_image" "rabbitmq" {
 }
 
 resource "docker_container" "rabbitmq" {
-	image = "${docker_image.rabbitmq.latest}"
+	image = "${docker_image.rabbitmq.name}"
 	name = "rabbitmq"
 
 	env = ["RABBITMQ_DEFAULT_USER=guest", "RABBITMQ_DEFAULT_PASS=guest"]

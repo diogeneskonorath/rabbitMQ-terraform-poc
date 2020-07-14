@@ -35,5 +35,17 @@ resource "rabbitmq_queue" "bmf-queue" {
   }
 }
 
+resource "rabbitmq_policy" "test" {
+    name = "debug-ttl"
+    vhost = "${rabbitmq_permissions.guest.vhost}"
+    policy {
+        pattern = "${rabbitmq_queue.debug.name}"
+        priority = 0
+        apply_to = "queues"
+        definition {
+          message-ttl = 6000
+        }
+    }
+}
 
 
