@@ -1,0 +1,33 @@
+package test
+
+import (
+	"fmt"
+	"testing"
+	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestDockerModule(t *testing.T) {
+	t.Parallel()
+
+	rabbitmqVersion := "3.8.4"
+	expectedImageName := fmt.Sprintf("rabbitmq:%s-management", rabbitmqVersion)
+
+	terraformOptions := &terraform.Options{
+		TerraformDir: "../modules/docker",
+
+		Vars: map[string]interface{}{
+			"rabbitmq_version": rabbitmqVersion,
+		},
+
+		VarFiles: []string{"terraform.tfvars"},
+	}
+
+	defer terraform.Destroy(t, terraformOptions)
+
+	terraform.InitAndApply(t, terraformOptions)
+
+	actualImageName := terraform.Output(t, terraformOptions, "rabbitmq_image_name")
+
+	assert.Equal(t, expectedImageName, actualImageName)
+}
